@@ -1,0 +1,55 @@
+name: Report Test Summary
+
+permissions:
+  pull-requests: write
+  contents: read
+
+on: [ pull_request ]
+
+jobs:
+  summarize:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install build dependencies
+        run: python -m pip install --upgrade build
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Run tests
+        run: |
+          cd tests
+          pytest test_dummy.py -m test_pass -s -v --better-report --fail2skip --maxfail-streak=3 --pr-number=${{ github.event.pull_request.number }}
+          PYTEST_EXIT_CODE=$?
+          set -e
+        continue-on-error: true
+
+      - name: Run test summary and generate markdown
+        run: |
+          cd scripts
+          python summarize_tests.py $GITHUB_SHA
+
+      - name: Upload test summary artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: test-summary
+          path: reports/test_summary.md
+
+      - name: New comment summary on PR
+        uses: thollander/actions-comment-pull-request@v2
+        with:
+          filePath: scripts/reports/test_summary.md
+
+      - name: Fail job if tests failed
+        run: |
+          cd scripts
+          python check_status_tests.py
