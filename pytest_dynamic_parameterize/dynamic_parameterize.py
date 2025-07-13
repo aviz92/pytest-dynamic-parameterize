@@ -1,6 +1,7 @@
 import importlib
 import types
 import pytest
+from _pytest.config import Parser, Config
 
 
 def import_from_str(path: str):
@@ -15,8 +16,25 @@ def resolve_func(func_name: str, metafunc):
         or globals().get(func_name)
     )
 
+def pytest_addoption(parser: Parser) -> None:
+    parser.addoption(
+        "--dynamic-param",
+        action="store_true",
+        default=False,
+        help="Enable dynamic parameterization of tests using a function",
+    )
+
+def pytest_configure(config: Config) -> None:
+    if not config.getoption("--dynamic-param"):
+        return
+
+    config._better_report_enabled = config.getoption("--dynamic-param")
+
 @pytest.hookimpl(hookwrapper=True, trylast=True)
 def pytest_generate_tests(metafunc):
+    if not metafunc.config.getoption("--dynamic-param"):
+        return
+
     param_func_mark = metafunc.definition.get_closest_marker("parametrize_func")
     if not param_func_mark:
         return
