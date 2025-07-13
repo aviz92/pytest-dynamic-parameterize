@@ -46,6 +46,12 @@ def pytest_generate_tests(metafunc):
     if not param_func_marks:
         return
 
+    argnames = metafunc.function.__code__.co_varnames[:metafunc.function.__code__.co_argcount]
+
+    # Remove 'self' if present (for class methods)
+    if argnames and argnames[0] == "self":
+        argnames = argnames[1:]
+
     value_list = []
     parametrize_dict = {}
     for param_func_mark in param_func_marks:
@@ -73,8 +79,9 @@ def pytest_generate_tests(metafunc):
             tuple(item for group in combo for item in group)
             for combo in product(*value_list)
         ]
+        print()
         metafunc.parametrize(
-            argnames=[x for x in metafunc.fixturenames if x not in parametrize_dict],
+            argnames=[x for x in argnames if x not in parametrize_dict],
             argvalues=combinations,
             indirect=False,
             # ids=[",".join(f"{n}={v}" for n, v in zip(argnames, row)) for row in values],
