@@ -1,7 +1,6 @@
 import importlib
-import types
 from itertools import product
-
+import types
 import pytest
 from _pytest.config import Parser, Config
 
@@ -42,6 +41,7 @@ def pytest_generate_tests(metafunc):
         yield
         return
 
+    # param_func_mark = metafunc.definition.get_closest_marker("parametrize_func")
     param_func_marks = list(metafunc.definition.iter_markers(name="parametrize_func"))
     if not param_func_marks:
         return
