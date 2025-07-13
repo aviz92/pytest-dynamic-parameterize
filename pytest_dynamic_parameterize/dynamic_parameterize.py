@@ -10,11 +10,13 @@ def import_from_str(path: str):
     module = importlib.import_module(module_path)
     return getattr(module, func_name)
 
+
 def resolve_func(func_name: str, metafunc):
     return (
-        metafunc.function.__globals__.get(func_name)
-        or globals().get(func_name)
+            metafunc.function.__globals__.get(func_name)
+            or globals().get(func_name)
     )
+
 
 def pytest_addoption(parser: Parser) -> None:
     parser.addoption(
@@ -24,15 +26,18 @@ def pytest_addoption(parser: Parser) -> None:
         help="Enable dynamic parameterization of tests using a function",
     )
 
+
 def pytest_configure(config: Config) -> None:
     if not config.getoption("--dynamic-param"):
         return
 
     config._better_report_enabled = config.getoption("--dynamic-param")
 
+
 @pytest.hookimpl(hookwrapper=True, trylast=True)
 def pytest_generate_tests(metafunc):
     if not metafunc.config.getoption("--dynamic-param"):
+        yield
         return
 
     param_func_mark = metafunc.definition.get_closest_marker("parametrize_func")
@@ -52,10 +57,15 @@ def pytest_generate_tests(metafunc):
                 f'(for example: "module.submodule.function")'
             )
 
+    parametrize_dict = {}
+    for mark in metafunc.definition.iter_markers(name="parametrize"):
+        parametrize_dict[mark.args[0]] = mark.args[1]
+
     values = param_func(metafunc.config)
+
     if values:
         metafunc.parametrize(
-            argnames=metafunc.fixturenames,
+            argnames=[x for x in metafunc.fixturenames if x not in parametrize_dict],
             argvalues=values,
             indirect=False,
             # ids=[",".join(f"{n}={v}" for n, v in zip(argnames, row)) for row in values],
