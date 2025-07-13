@@ -1,6 +1,6 @@
 from setuptools import setup, find_packages
 
-package_version = '0.0.1'
+package_version = '0.0.2'
 
 package_name = 'pytest-dynamic-parameterize'
 package_description = 'A Python package for managing pytest plugins.'
@@ -32,14 +32,6 @@ setup(
     url=package_url,
     project_urls={
         'Repository': package_url,
-    },
-    entry_points={
-        "pytest11": [
-            "better_report = pytest_plugins.better_report",
-            "max_fail_streak = pytest_plugins.max_fail_streak",
-            "fail2skip = pytest_plugins.fail2skip",
-            "add_config_parameters = pytest_plugins.add_config_parameters",
-        ]
     },
     classifiers=[
         "Framework :: Pytest",
