@@ -12,7 +12,7 @@ def import_from_str(path: str):
 
 def resolve_func(func_name: str, metafunc):
     return (
-        metafunc.function._globals_.get(func_name)
+        metafunc.function.__globals__.get(func_name)
         or globals().get(func_name)
     )
 
@@ -60,3 +60,5 @@ def pytest_generate_tests(metafunc):
             indirect=False,
             # ids=[",".join(f"{n}={v}" for n, v in zip(argnames, row)) for row in values],
         )
+
+    yield
