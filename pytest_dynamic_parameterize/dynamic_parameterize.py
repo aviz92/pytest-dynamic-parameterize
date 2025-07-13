@@ -1,5 +1,7 @@
 import importlib
 import types
+from itertools import product
+
 import pytest
 from _pytest.config import Parser, Config
 
@@ -40,33 +42,40 @@ def pytest_generate_tests(metafunc):
         yield
         return
 
-    param_func_mark = metafunc.definition.get_closest_marker("parametrize_func")
-    if not param_func_mark:
+    param_func_marks = list(metafunc.definition.iter_markers(name="parametrize_func"))
+    if not param_func_marks:
         return
 
-    func_path = param_func_mark.args[0]
-
-    param_func = resolve_func(func_path, metafunc)
-    if not isinstance(param_func, types.FunctionType):
-        try:
-            param_func = import_from_str(func_path)
-        except Exception as e:
-            raise ValueError(
-                f'Cannot import the function "{func_path}"\n'
-                f'please import the function in your test module or provide a full dotted path. '
-                f'(for example: "module.submodule.function")'
-            )
-
+    value_list = []
     parametrize_dict = {}
-    for mark in metafunc.definition.iter_markers(name="parametrize"):
-        parametrize_dict[mark.args[0]] = mark.args[1]
+    for param_func_mark in param_func_marks:
+        func_path = param_func_mark.args[0]
 
-    values = param_func(metafunc.config)
+        param_func = resolve_func(func_path, metafunc)
+        if not isinstance(param_func, types.FunctionType):
+            try:
+                param_func = import_from_str(func_path)
+            except Exception as e:
+                raise ValueError(
+                    f'Cannot import the function "{func_path}"\n'
+                    f'please import the function in your test module or provide a full dotted path. '
+                    f'(for example: "module.submodule.function")'
+                )
 
-    if values:
+        for mark in metafunc.definition.iter_markers(name="parametrize"):
+            parametrize_dict[mark.args[0]] = mark.args[1]
+
+        values = param_func(metafunc.config, *param_func_mark.args[1:], **param_func_mark.kwargs)
+        value_list.append(values)
+
+    if value_list:
+        combinations = [
+            tuple(item for group in combo for item in group)
+            for combo in product(*value_list)
+        ]
         metafunc.parametrize(
             argnames=[x for x in metafunc.fixturenames if x not in parametrize_dict],
-            argvalues=values,
+            argvalues=combinations,
             indirect=False,
             # ids=[",".join(f"{n}={v}" for n, v in zip(argnames, row)) for row in values],
         )
