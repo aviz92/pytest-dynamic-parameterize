@@ -47,11 +47,11 @@ def pytest_generate_tests(metafunc):
         yield
         return
 
-    argnames = metafunc.function.__code__.co_varnames[:metafunc.function.__code__.co_argcount]
-
+    args_and_fixtures = metafunc.function._code_.co_varnames[:metafunc.function._code_.co_argcount]
+    arg_names = [name for name in args_and_fixtures if name not in metafunc._arg2fixturedefs]
     # Remove 'self' if present (for class methods)
-    if argnames and argnames[0] == "self":
-        argnames = argnames[1:]
+    if arg_names and arg_names[0] == "self":
+        arg_names = arg_names[1:]
 
     value_list = []
     parametrize_dict = {}
@@ -82,10 +82,10 @@ def pytest_generate_tests(metafunc):
         ]
         print()
         metafunc.parametrize(
-            argnames=[x for x in argnames if x not in parametrize_dict],
+            argnames=[x for x in arg_names if x not in parametrize_dict],
             argvalues=combinations,
             indirect=False,
-            # ids=[",".join(f"{n}={v}" for n, v in zip(argnames, row)) for row in values],
+            # ids=[",".join(f"{n}={v}" for n, v in zip(arg_names, row)) for row in values],
         )
 
     yield
