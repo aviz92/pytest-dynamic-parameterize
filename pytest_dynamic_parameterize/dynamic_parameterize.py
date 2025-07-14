@@ -47,7 +47,7 @@ def pytest_generate_tests(metafunc):
         yield
         return
 
-    args_and_fixtures = metafunc.function._code_.co_varnames[:metafunc.function._code_.co_argcount]
+    args_and_fixtures = metafunc.function.__code__.co_varnames[:metafunc.function.__code__.co_argcount]
     arg_names = [name for name in args_and_fixtures if name not in metafunc._arg2fixturedefs]
     # Remove 'self' if present (for class methods)
     if arg_names and arg_names[0] == "self":
