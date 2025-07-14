@@ -44,6 +44,7 @@ def pytest_generate_tests(metafunc):
     # param_func_mark = metafunc.definition.get_closest_marker("parametrize_func")
     param_func_marks = list(metafunc.definition.iter_markers(name="parametrize_func"))
     if not param_func_marks:
+        yield
         return
 
     argnames = metafunc.function.__code__.co_varnames[:metafunc.function.__code__.co_argcount]
