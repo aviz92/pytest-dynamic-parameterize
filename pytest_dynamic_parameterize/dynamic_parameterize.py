@@ -5,6 +5,14 @@ import pytest
 from _pytest.config import Parser, Config
 
 
+PYTEST_BUILTIN_FIXTURES = {
+    "request", "tmp_path", "tmp_path_factory", "cache",
+    "capfd", "capfdbinary", "capsys", "capsysbinary",
+    "monkeypatch", "record_property", "record_xml_property",
+    "recwarn", "pytestconfig", "doctest_namespace"
+}
+
+
 def import_from_str(path: str):
     """Import a function from a full dotted path string."""
     module_path, func_name = path.rsplit(".", 1)
@@ -48,7 +56,10 @@ def pytest_generate_tests(metafunc):
         return
 
     args_and_fixtures = metafunc.function.__code__.co_varnames[:metafunc.function.__code__.co_argcount]
-    arg_names = [name for name in args_and_fixtures if name not in metafunc._arg2fixturedefs]
+    arg_names = [
+        name for name in args_and_fixtures
+        if name not in metafunc._arg2fixturedefs and name not in PYTEST_BUILTIN_FIXTURES
+    ]
     # Remove 'self' if present (for class methods)
     if arg_names and arg_names[0] == "self":
         arg_names = arg_names[1:]
