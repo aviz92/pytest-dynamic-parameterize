@@ -1,5 +1,6 @@
-import logging
+from custom_python_logger import get_logger
+from dotenv import load_dotenv
 
-from custom_python_logger import build_logger
+load_dotenv()
 
-logger = build_logger(project_name="pytest-dynamic-parameterize", log_level=logging.DEBUG)
+logger = get_logger("pytest-dynamic-parameterize")
