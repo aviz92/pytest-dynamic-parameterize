@@ -42,17 +42,18 @@ def my_params(config, some_param=None) -> list[tuple]:
 
 ```python
 import pytest
-from tests.parameterize_functions.parametrize_functions.my_params import my_params
+from tests.parameterize_functions.my_params import my_params
+
 
 @pytest.mark.parametrize_func("my_params")
 def test_add(a, b, expected):
-  assert a + b == expected
+    assert a + b == expected
 ```
 
 - **Pass arguments to your parameter function:**
   ```python
   import pytest
-  from tests.parameterize_functions.parametrize_functions.my_params import my_params
+  from tests.parameterize_functions.my_params import my_params
 
   @pytest.mark.parametrize_func("my_params", some_param="special")
   def test_add_special(a, b, expected):
@@ -62,7 +63,7 @@ def test_add(a, b, expected):
 - **Use multiple parametrize_func markers for advanced parameterization:**
   ```python
   import pytest
-  from tests.parameterize_functions.parametrize_functions.my_params import my_params
+  from tests.parameterize_functions.my_params import my_params
 
   @pytest.mark.parametrize_func("my_params", some_param="special")
   @pytest.mark.parametrize_func("my_params")
