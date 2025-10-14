@@ -1,4 +1,4 @@
-def my_params(config, some_param=None) -> list[tuple]:
+def my_params(config, some_param=None) -> list[tuple]:  # pylint: disable=:W0613
     # Example: generate parameters dynamically, using an optional argument
     if some_param == "special":
         return [

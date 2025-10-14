@@ -1,6 +1,7 @@
 setuptools
 wheel
-dotenv
+python-dotenv
+pre-commit
 colorlog
 pytest
 custom-python-logger
