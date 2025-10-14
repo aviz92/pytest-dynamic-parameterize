@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup
 
-package_version = "0.1.10"
+package_version = "0.1.11"
 
 package_name = "pytest-dynamic-parameterize"
 package_description = "A Python package for managing pytest plugins."
