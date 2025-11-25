@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pytest-dynamic-parameterize"
-version = "0.1.12"
+version = "0.1.13"
 description = "A Python package for managing pytest plugins."
 readme = "README.md"
 requires-python = ">=3.11"
@@ -39,3 +39,6 @@ Issues = "https://github.com/aviz92/pytest-dynamic-parameterize/issues"
 where = ["."]
 include = ["pytest_dynamic_parameterize*"]
 namespaces = false
+
+[project.entry-points.pytest11]
+dynamic_param = "pytest_dynamic_parameterize.dynamic_parameterize"
