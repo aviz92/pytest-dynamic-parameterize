@@ -1,5 +1,6 @@
 # https://pre-commit.com
 # https://github.com/pre-commit
+# pre-commit run --all-files
 
 repos: # Black → isort → Ruff (fix=false) → Pylint
   # ### pre-commit-hooks ###
@@ -10,7 +11,7 @@ repos: # Black → isort → Ruff (fix=false) → Pylint
       - id: end-of-file-fixer           # Ensures a file ends with a newline
       - id: check-merge-conflict        # Checks for merge conflict markers
       - id: check-added-large-files     # Prevents committing large files
-        args: [ "--maxkb=100" ]         # Adjust size limit as needed
+        args: [ "--maxkb=250" ]         # Adjust size limit as needed
       - id: check-yaml                  # Validates YAML syntax
       - id: check-json                  # Validates JSON syntax
       - id: check-toml                  # Validates TOML files
@@ -53,6 +54,19 @@ repos: # Black → isort → Ruff (fix=false) → Pylint
           "--fix",
           "--config=.config/ruff.toml"
         ]
+        exclude: ^tests/  # ^(tests/|other_dir/)
+        types: [ python ]
+
+  - repo: https://github.com/astral-sh/ruff-pre-commit
+    rev: v0.9.7
+    hooks:
+      - id: ruff
+        name: Ruff (Python linter tests)
+        args: [
+          "--fix",
+          "--config=.config/ruff_tests.toml"
+        ]
+        files: ^tests/
         types: [ python ]
 
     # ### pylint ###
@@ -65,4 +79,14 @@ repos: # Black → isort → Ruff (fix=false) → Pylint
           - "--rcfile=.config/pylintrc"
           - "--init-hook=import sys; sys.path.insert(0, 'src')"
           - "--enable-all-extensions"
+        exclude: ^tests/  # ^(tests/|other_dir/)
+        additional_dependencies: [ "pylint-django", "pylint-flask" ]
+
+      - id: pylint
+        name: Pylint (tests)
+        args:
+          - "--rcfile=.config/pylintrc_tests"
+          - "--init-hook=import sys; sys.path.insert(0, 'src')"
+          - "--enable-all-extensions"
+        files: ^tests/
         additional_dependencies: [ "pylint-django", "pylint-flask" ]
