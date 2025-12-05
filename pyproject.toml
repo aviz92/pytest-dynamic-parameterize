@@ -15,6 +15,7 @@ keywords = ["development", "pytest", "plugin", "testing", "automation", "dynamic
 classifiers = [
     "Development Status :: 4 - Beta",
     "Intended Audience :: Developers",
+    "Framework :: Pytest",
     "Programming Language :: Python :: 3.11",
     "Operating System :: OS Independent",
     "Topic :: System :: Logging",
