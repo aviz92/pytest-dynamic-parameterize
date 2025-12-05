@@ -13,7 +13,7 @@ authors = [{ name = "Avi Zaguri" },]
 keywords = ["development", "pytest", "plugin", "testing", "automation", "dynamic", "parameterize"]
 
 classifiers = [
-    "Development Status :: Production/Stable",
+    "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
     "Framework :: Pytest",
     "Programming Language :: Python :: 3.11",
