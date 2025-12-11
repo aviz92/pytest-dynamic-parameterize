@@ -96,7 +96,6 @@ def pytest_generate_tests(metafunc: pytest.Metafunc) -> Generator[None, None, No
 
     if value_list:
         combinations = [tuple(item for group in combo for item in group) for combo in product(*value_list)]
-        print()
         metafunc.parametrize(
             argnames=[x for x in arg_names if x not in parametrize_dict],
             argvalues=combinations,
