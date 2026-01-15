@@ -14,6 +14,7 @@ Easily generate test parameters at runtime from any function—supporting advanc
     - Data-driven tests from config files, databases, or APIs
     - Centralized test data logic
     - Cleaner, more maintainable test code
+  - For skipped tests, for empty parameter sets, you can return `NOT_SET_PARAMETERS` from your parameter function to indicate no parameters should be set.
 
 ---
 

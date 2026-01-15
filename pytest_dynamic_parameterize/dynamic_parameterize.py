@@ -6,6 +6,8 @@ from itertools import product
 import pytest
 from _pytest.config import Config, Parser
 
+from pytest_dynamic_parameterize.const import NOT_SET_PARAMETERS
+
 PYTEST_BUILTIN_FIXTURES = {
     "request",
     "tmp_path",
@@ -95,7 +97,10 @@ def pytest_generate_tests(metafunc: pytest.Metafunc) -> Generator[None, None, No
         value_list.append(values)
 
     if value_list:
-        combinations = [tuple(item for group in combo for item in group) for combo in product(*value_list)]
+        if NOT_SET_PARAMETERS in value_list:
+            combinations = ()
+        else:
+            combinations = [tuple(item for group in combo for item in group) for combo in product(*value_list)]
         metafunc.parametrize(
             argnames=[x for x in arg_names if x not in parametrize_dict],
             argvalues=combinations,
