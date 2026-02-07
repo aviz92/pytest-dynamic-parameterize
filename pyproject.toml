@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pytest-dynamic-parameterize"
-version = "1.0.3"
+version = "1.0.4"
 description = "A pytest plugin to dynamically parameterize tests based on external data sources."
 readme = "README.md"
 requires-python = ">=3.11"
