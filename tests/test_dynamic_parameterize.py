@@ -1,9 +1,11 @@
 import pytest
 from custom_python_logger import get_logger
 
+from pytest_dynamic_parameterize import LOGGER_NAME
+
 # from tests.parameterize_functions.my_params import my_params
 
-logger = get_logger(__name__)
+logger = get_logger(LOGGER_NAME)
 
 
 @pytest.mark.parametrize_func("tests.parameterize_functions.my_params.my_params")
